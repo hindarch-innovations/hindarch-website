@@ -1,0 +1,108 @@
+/* ---------------------------------------------------------------------------
+   HindArch — overrides layered on top of the Webflow export.
+   Kept in a separate file so re-exporting from Webflow never clobbers them.
+   --------------------------------------------------------------------------- */
+
+/* Contact form states -------------------------------------------------------
+   The Webflow export shipped .rl-success-text as #2d7a2d (dark green), which is
+   effectively invisible against the near-black contact section. These rebuild
+   the two states in the site's own palette: amber accent (#ffc107), off-white
+   text (#f0eee8), 8px radii, and the same panel treatment as .rl-form-input.
+   --------------------------------------------------------------------------- */
+
+.is-hidden {
+  display: none !important;
+}
+
+.ha-form-message {
+  grid-column-gap: 14px;
+  align-items: flex-start;
+  border-radius: 8px;
+  margin-top: 1.5rem;
+  padding: 18px 20px;
+  display: flex;
+  font-family: "Instrument Sans", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+}
+
+.ha-form-message__icon {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  margin-top: 1px;
+}
+
+.ha-form-message__icon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.ha-form-message__title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.ha-form-message__text {
+  color: #f0eee8b8;
+  margin: 4px 0 0;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+/* Success — green reads as "delivered" without fighting the amber brand accent */
+.ha-form-message--success {
+  background-color: #4ade8014;
+  border: 1px solid #4ade8040;
+}
+
+.ha-form-message--success .ha-form-message__icon {
+  color: #4ade80;
+}
+
+.ha-form-message--success .ha-form-message__title {
+  color: #6ee7a0;
+}
+
+/* Error */
+.ha-form-message--error {
+  background-color: #f8717114;
+  border: 1px solid #f8717140;
+}
+
+.ha-form-message--error .ha-form-message__icon {
+  color: #f87171;
+}
+
+.ha-form-message--error .ha-form-message__title {
+  color: #fca5a5;
+}
+
+/* Gentle entrance so the state change is noticed after the form is replaced */
+.ha-form-message:not(.is-hidden) {
+  animation: ha-form-message-in .35s ease-out both;
+}
+
+@keyframes ha-form-message-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ha-form-message:not(.is-hidden) {
+    animation: none;
+  }
+}
+
+/* Submit button while the request is in flight */
+.rl-button-2[disabled] {
+  cursor: progress;
+  opacity: .65;
+}
