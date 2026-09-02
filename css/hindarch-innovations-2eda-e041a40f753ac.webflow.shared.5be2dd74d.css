@@ -3302,7 +3302,7 @@ body {
 .hero-stack {
   -webkit-text-fill-color: inherit;
   background-color: #0000;
-  background-image: url("../images/chatgpt-20image-20may-2027-2c-202026-2c-2004_48_54-20pm.png"), linear-gradient(#00010a 5%, #010109);
+  background-image: url("../images/chatgpt-20image-20may-2027-2c-202026-2c-2004_48_54-20pm.webp"), linear-gradient(#00010a 5%, #010109);
   background-position: 50% 100%, 0 0;
   background-repeat: no-repeat, repeat;
   background-size: cover, auto;
@@ -3765,9 +3765,6 @@ body {
 
 .product-logo {
   object-fit: fill;
-  background-image: url("../images/hindpre.jpeg");
-  background-position: 0 0;
-  background-size: auto;
   border-radius: 8px;
   flex-shrink: 0;
   margin-top: 0;
@@ -5080,7 +5077,7 @@ body {
 
 .section-6 {
   background-color: var(--background-color);
-  background-image: url("../images/chatgpt-20image-20may-2027-2c-202026-2c-2010_29_31-20pm.png");
+  background-image: url("../images/chatgpt-20image-20may-2027-2c-202026-2c-2010_29_31-20pm.webp");
   background-position: 75%;
   background-repeat: no-repeat;
   background-size: 65%;
@@ -5090,7 +5087,7 @@ body {
 .div-block-11 {
   grid-column-gap: 16px;
   grid-row-gap: 16px;
-  background-image: url("../images/chatgpt-20image-20may-2027-2c-202026-2c-2010_29_31-20pm.png");
+  background-image: url("../images/chatgpt-20image-20may-2027-2c-202026-2c-2010_29_31-20pm.webp");
   background-position: 50%;
   background-size: cover;
   grid-template-rows: auto auto;
@@ -5781,13 +5778,13 @@ body {
 }
 
 .div-block-13 {
-  background-image: url("../images/chatgpt-20image-20may-2027-2c-202026-2c-2004_48_54-20pm.png");
+  background-image: url("../images/chatgpt-20image-20may-2027-2c-202026-2c-2004_48_54-20pm.webp");
   background-position: 50% 75%;
   background-size: auto;
 }
 
 .div-block-14 {
-  background-image: url("../images/chatgpt-20image-20may-2027-2c-202026-2c-2004_48_54-20pm.png"), linear-gradient(#01091a, #01091a);
+  background-image: url("../images/chatgpt-20image-20may-2027-2c-202026-2c-2004_48_54-20pm.webp"), linear-gradient(#01091a, #01091a);
   background-position: 50% -20%, 0 0;
   background-repeat: no-repeat, repeat;
   background-size: auto, auto;
