@@ -10,6 +10,13 @@
    text (#f0eee8), 8px radii, and the same panel treatment as .rl-form-input.
    --------------------------------------------------------------------------- */
 
+:root {
+  /* The stack every element in the contact section already uses -- labels,
+     inputs, textarea, submit button and headings are all set to this, not to
+     the Instrument Sans body font declared further up the export. */
+  --ha-ui-font: system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+}
+
 .is-hidden {
   display: none !important;
 }
@@ -21,7 +28,7 @@
   margin-top: 1.5rem;
   padding: 18px 20px;
   display: flex;
-  font-family: "Instrument Sans", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  font-family: var(--ha-ui-font);
 }
 
 .ha-form-message__icon {
@@ -37,8 +44,12 @@
   display: block;
 }
 
+/* Sizes are lifted from the neighbouring form controls: 15px/.02em matches
+   .rl-button-2, 14px/400 matches .rl-form-input and .rl-form-text-area. */
 .ha-form-message__title {
+  letter-spacing: .02em;
   margin: 0;
+  font-family: var(--ha-ui-font);
   font-size: 15px;
   font-weight: 600;
   line-height: 1.45;
@@ -47,7 +58,9 @@
 .ha-form-message__text {
   color: #f0eee8b8;
   margin: 4px 0 0;
+  font-family: var(--ha-ui-font);
   font-size: 14px;
+  font-weight: 400;
   line-height: 1.55;
 }
 
