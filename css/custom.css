@@ -21,6 +21,15 @@
   display: none !important;
 }
 
+/* Every other field is required, so the one optional field says so rather than
+   leaving people to infer it. Dimmed so it reads as an aside on the label. */
+.ha-field-optional {
+  color: #f0eee85c;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: .02em;
+}
+
 .ha-form-message {
   grid-column-gap: 14px;
   align-items: flex-start;
