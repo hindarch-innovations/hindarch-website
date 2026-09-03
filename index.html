@@ -583,23 +583,19 @@
   <script src="js/webflow.schunk.f5b27520d999655b.js" type="text/javascript"></script>
   <script src="js/webflow-script.js" type="text/javascript"></script>
   <script>
-    window.addEventListener('scroll', function () {
+    // The bar's scrolled look lives in custom.css under .navbar.is-scrolled;
+    // this only says which state it is in. Writing the styles inline from here
+    // is what used to switch backdrop-filter and border-bottom on and off, and
+    // both of those moved things -- see the Sticky bar note in custom.css.
+    (function () {
       var nb = document.querySelector('.navbar');
       if (!nb) return;
-      if (window.scrollY > 60) {
-        nb.style.backgroundColor = 'rgba(8,19,38,0.80)';
-        nb.style.backdropFilter = 'blur(16px)';
-        nb.style.webkitBackdropFilter = 'blur(16px)';
-        nb.style.boxShadow = '0 4px 32px rgba(0,0,0,0.35)';
-        nb.style.borderBottom = '1px solid rgba(255,255,255,0.08)';
-      } else {
-        nb.style.backgroundColor = '#081326';
-        nb.style.backdropFilter = 'none';
-        nb.style.webkitBackdropFilter = 'none';
-        nb.style.boxShadow = 'none';
-        nb.style.borderBottom = 'none';
-      }
-    }, { passive: true });
+      var sync = function () {
+        nb.classList.toggle('is-scrolled', window.scrollY > 60);
+      };
+      window.addEventListener('scroll', sync, { passive: true });
+      sync();
+    })();
 
     // Reveal on scroll. Groups are revealed one element at a time via a CSS
     // transition-delay custom property; the observer only ever adds the class,

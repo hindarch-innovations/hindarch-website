@@ -379,8 +379,15 @@ video {
   text-align: center;
 }
 
+/* .product-desc's own 1rem row-gap put the CTA right under the last bullet.
+   The list is always the element immediately before the button (or HindVer's
+   Coming Soon chip), so its bottom margin is the one place that widens that gap
+   without also spreading "Key Features" away from its list. The auto margin on
+   the last child still pushes the button to the card floor -- this only sets
+   the minimum it can ever close to. */
 .key-features-list {
   height: auto;
+  margin-bottom: .75rem;
 }
 
 /* .content-wrapper aligns its children flex-start, so .product-desc shrink-wrapped
@@ -565,9 +572,17 @@ video {
    --------------------------------------------------------------------------- */
 
 @media screen and (max-width: 479px) {
+  /* "Predict -> Design -> Verify" has to stay on one line -- it wrapped at
+     1.75rem from about 420px down. The string measures 12.76em wide in DM Sans
+     at this weight, and the hero's 5% gutters leave 0.9vw of room, so anything
+     at or under 7.05vw fits; 6.6vw keeps a margin for the fallback face while
+     the webfont is still loading. The rem cap stops it growing past the size it
+     had on the phones where it already fitted. nowrap makes the guarantee
+     explicit rather than relying on the arithmetic alone. */
   .heading-5 {
-    font-size: 1.75rem;
+    font-size: min(1.75rem, 6.6vw);
     line-height: 1.25;
+    white-space: nowrap;
   }
 
   .margin-bottom-24px {
@@ -693,6 +708,44 @@ video {
 
   .menu-button {
     padding: 10px;
+  }
+}
+
+/* Sticky bar ------------------------------------------------------------------
+   The scrolled state used to be written as inline styles on every scroll event,
+   flipping backdrop-filter between none and blur(16px) and border-bottom between
+   none and 1px. Both flips were visible:
+
+   - Turning backdrop-filter on promoted the bar to its own compositing layer
+     mid-scroll. The brand sits at a fractional offset (the 5% gutter is 24.44px
+     at a 490px bar), and promotion re-rasterises that against the new layer
+     origin, so "HindArch Innovations" appeared to nudge left.
+   - Adding a 1px border grew the bar from 126px to 127px, nudging the whole
+     page down a pixel.
+
+   So the blur and the border box are now permanent -- the blur is invisible
+   while the background is opaque, and the border is transparent until it is
+   wanted -- and only colour and shadow change. The script toggles .is-scrolled
+   and nothing else.
+   --------------------------------------------------------------------------- */
+
+.navbar {
+  background-color: #081326;
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid #0000;
+  transition: background-color .25s ease, border-color .25s ease, box-shadow .25s ease;
+}
+
+.navbar.is-scrolled {
+  background-color: #081326cc;
+  border-bottom-color: #ffffff14;
+  box-shadow: 0 4px 32px #00000059;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .navbar {
+    transition: none;
   }
 }
 
