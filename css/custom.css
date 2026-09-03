@@ -520,9 +520,15 @@ video {
 }
 
 @media screen and (max-width: 767px) {
+  /* The only percentage gutter in the file -- every other band is whole pixels
+     (20px at 991, 16px at 479, 12px at 359). A percentage of the viewport is
+     fractional at nearly every width (19.5px at 390, 20.6px at 412), which puts
+     the brand's left edge on a fractional pixel and makes it re-snap whenever the
+     bar is re-rasterised -- the failure the Sticky bar note below describes.
+     20px matches the band above it. */
   .header-container {
-    padding-left: 5%;
-    padding-right: 5%;
+    padding-left: 20px;
+    padding-right: 20px;
   }
 
   .image-3 {
@@ -639,7 +645,18 @@ video {
     width: 140px;
   }
 
-  .brand {
+  /* .w--current has to be spelled out. Webflow's export ships
+     `.brand.w--current { grid-column-gap: 16px }`, and the brand is an <a> to
+     #Hero-Section -- the same target as the Home link -- so its scroll-spy adds
+     and removes w--current as you cross out of the hero into About. At 0,2,0 that
+     rule outranks a plain `.brand` at 0,1,0, so the gap was flipping 8px <-> 16px
+     mid-scroll. 16px puts the row 4.3px over its budget at 360px, so the brand
+     flex-shrank on top of it (logo 100 -> 97.63px) and the wordmark jumped 5.63px
+     sideways and back. Matching the specificity pins the gap at 8px in both
+     states. Only ever visible below 480px: this is the one breakpoint that
+     overrides the export's 16px, so above it the two states already agreed. */
+  .brand,
+  .brand.w--current {
     grid-column-gap: 8px;
     gap: 8px;
   }
