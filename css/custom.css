@@ -172,11 +172,24 @@
 /* Safety net: nothing may force a horizontal scrollbar at any width.
    `clip`, not `hidden` -- hidden turns html/body into a scroll container, and a
    scroll container between the viewport and .navbar silently kills its
-   position:sticky. clip does the same visual job without that side effect. */
+   position:sticky. clip does the same visual job without that side effect.
+
+   The background is the fix for the hairlines that showed between sections at
+   tablet and phone widths. The export leaves `body { background-color: #fff }`,
+   so the page canvas is white and every section paints its own near-black
+   background over it. Wherever two section boxes meet on a fractional device
+   pixel -- a non-integer DPR, browser zoom, DevTools responsive mode -- neither
+   section covers the sliver between them and the white canvas shows through,
+   antialiased down to a 1px line (sampled as rgb(21,23,30) over rgb(0,1,10):
+   white at ~8% coverage, not a border -- no section carries one). Painting the
+   canvas the site's own background means a seam reveals near-black, at every
+   boundary and every DPR. Desktop never showed it because at DPR 1 the section
+   edges round onto whole pixels. */
 html,
 body,
 .body {
   overflow-x: clip;
+  background-color: #00020a;
 }
 
 img,
@@ -460,6 +473,15 @@ video {
      are centred. Only the logo needs overriding -- the rest already agree. */
   .product-logo {
     align-self: center;
+    width: 170px;
+  }
+
+  /* Stacked, the card no longer has two neighbours to share the row with, so
+     the desktop 32/28 padding and the 200px mark leave it looking stretched.
+     Both step down with the breakpoints, and .div-block-6's cap (it already
+     centres itself with auto margins) narrows to keep the measure readable. */
+  .product-card {
+    padding: 28px 24px;
   }
 
   #w-node-_160d8ce7-1637-832c-0c5f-21793dc322c8-71312fed {
@@ -498,6 +520,18 @@ video {
 
   .image-3 {
     width: 110px;
+  }
+
+  .div-block-6 {
+    max-width: 460px;
+  }
+
+  .product-card {
+    padding: 26px 22px;
+  }
+
+  .product-logo {
+    width: 160px;
   }
 
   .section-5 {
@@ -578,6 +612,18 @@ video {
     width: 100px;
   }
 
+  .div-block-6 {
+    max-width: 380px;
+  }
+
+  .product-card {
+    padding: 22px 20px;
+  }
+
+  .product-logo {
+    width: 140px;
+  }
+
   .brand {
     grid-column-gap: 8px;
     gap: 8px;
@@ -647,6 +693,118 @@ video {
 
   .menu-button {
     padding: 10px;
+  }
+}
+
+/* Motion ---------------------------------------------------------------------
+   Reveal-on-scroll and hover feedback. The transitions live here; an
+   IntersectionObserver in index.html adds .is-in once, the first time an
+   element comes into view, and then stops watching it -- nothing re-animates on
+   the way back up.
+
+   Everything is gated behind html.ha-motion, which that script adds to itself.
+   If JS is disabled or throws, the class is never set and no element is ever
+   hidden, so the page degrades to exactly what it is today. The script also
+   declines to set it when prefers-reduced-motion is on; the media query below
+   is the belt-and-braces case for a preference that changes after load.
+   --------------------------------------------------------------------------- */
+
+html.ha-motion .ha-reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity .6s cubic-bezier(.22, .61, .36, 1),
+              transform .6s cubic-bezier(.22, .61, .36, 1);
+  transition-delay: var(--ha-reveal-delay, 0ms);
+}
+
+html.ha-motion .ha-reveal.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* The export hovers the yellow "Book a Demo" CTA to grey #32343a with white
+   text -- a Webflow default that reads as a broken state next to the amber
+   palette. Brightened instead, with the same lift the product cards use. */
+.button-primary:hover {
+  color: #333;
+  background-color: #ffcd38;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px #ffc10740;
+}
+
+.button-primary:active {
+  color: #333;
+  background-color: #f0b400;
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+/* The remaining controls ship no hover at all. */
+.btn-contact-us,
+.button-2,
+.link-block-2,
+.rl_footer1_link {
+  transition: color .2s ease, background-color .2s ease, border-color .2s ease,
+              transform .2s ease, box-shadow .2s ease;
+}
+
+.btn-contact-us:hover {
+  color: #ffcd38;
+  background-color: #f5a8001a;
+  border-color: #ffcd38;
+  transform: translateY(-2px);
+}
+
+.btn-contact-us:active,
+.button-2:active,
+.link-block-2:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+.button-2:hover {
+  background-color: #ffcd38;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px #ffc10740;
+}
+
+.link-block-2:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px #ffc10726;
+}
+
+.rl_footer1_link:hover {
+  color: #ffc107;
+}
+
+/* .product-card:hover already lifts and glows in the export, but with no
+   transition on the base rule it snapped between the two states. */
+.product-card {
+  transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.ha-motion .ha-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .button-primary:hover,
+  .button-primary:active,
+  .btn-contact-us:hover,
+  .button-2:hover,
+  .link-block-2:hover,
+  .product-card:hover {
+    transform: none;
+  }
+
+  .btn-contact-us,
+  .button-2,
+  .link-block-2,
+  .rl_footer1_link,
+  .product-card {
+    transition: none;
   }
 }
 

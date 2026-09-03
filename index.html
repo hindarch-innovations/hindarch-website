@@ -437,12 +437,10 @@
                   <form id="wf-form-Contact-7-Form" name="wf-form-Contact-1-Form" data-name="Contact 1 Form"
                     method="POST" action="https://api.web3forms.com/submit" class="rl_contact7_form"
                     data-wf-page-id="6a907040c273936b71312fed"
-                    data-wf-element-id="0d17777f-b507-b69d-e685-a3142d9ca099"><!-- TODO: replace with the Web3Forms access key issued for hindarch.in@gmail.com.
-                           Get one at https://web3forms.com (enter the address, confirm the
-                           verification email, paste the key here). The key is a public
-                           client-side identifier, not a secret. The form will NOT deliver
-                           mail until this placeholder is replaced. -->
-                    <input type="hidden" name="access_key" value="REPLACE_WITH_HINDARCH_IN_ACCESS_KEY" /><input
+                    data-wf-element-id="0d17777f-b507-b69d-e685-a3142d9ca099"><!-- Web3Forms access key issued for hindarch.in@gmail.com; submissions are
+                           delivered to that address. The key is a public client-side
+                           identifier, not a secret. -->
+                    <input type="hidden" name="access_key" value="90fe7b7b-8fa4-499b-89be-9e98e623a3e7" /><input
                       type="hidden" name="subject" value="New HindArch contact form submission" /><input type="checkbox"
                       name="botcheck" class="hidden" style="display:none" />
                     <div class="rl_contact7_form-field-wrapper"><label for="Contact-7-Name-3"
@@ -584,8 +582,6 @@
   <script src="js/webflow.schunk.a3140c51201be139.js" type="text/javascript"></script>
   <script src="js/webflow.schunk.f5b27520d999655b.js" type="text/javascript"></script>
   <script src="js/webflow-script.js" type="text/javascript"></script>
-  <script src="js/scrolltrigger.min.js" type="text/javascript"></script>
-  <script src="js/gsap.min.js" type="text/javascript"></script>
   <script>
     window.addEventListener('scroll', function () {
       var nb = document.querySelector('.navbar');
@@ -604,6 +600,93 @@
         nb.style.borderBottom = 'none';
       }
     }, { passive: true });
+
+    // Reveal on scroll. Groups are revealed one element at a time via a CSS
+    // transition-delay custom property; the observer only ever adds the class,
+    // and unobserves straight after, so an element animates exactly once.
+    //
+    // html.ha-motion is set from here rather than in the markup: the CSS that
+    // hides .ha-reveal is scoped to that class, so if this block never runs --
+    // JS off, an old browser, an exception above -- nothing is hidden.
+    (function () {
+      var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduced || !('IntersectionObserver' in window)) return;
+
+      // [selector, stagger in ms]. Order within a group follows document order.
+      var onLoad = [
+        ['.heading-5, .margin-bottom-24px, .div-block, .youtube', 80]
+      ];
+      var onScroll = [
+        ['.about-section .rl-heading-style-h2, .about-subheading, .about-vision-card', 80],
+        ['.section-3 .rl-heading-style-h2, .products-headline', 80],
+        ['.product-card', 80],
+        ['.rl-heading-style-h2.faqs', 0],
+        ['.rl_faq6_accordion', 60],
+        ['.rl_contact7_content, .rl_contact7_form-block', 80],
+        ['.rl_footer1_top-wrapper > *', 80]
+      ];
+
+      // Past six steps the last element in a group waits long enough to read as
+      // a stall rather than a stagger, so the delay stops growing there.
+      var MAX_STEPS = 6;
+
+      var mark = function (groups) {
+        var all = [];
+        groups.forEach(function (group) {
+          var els = document.querySelectorAll(group[0]);
+          Array.prototype.forEach.call(els, function (el, i) {
+            el.classList.add('ha-reveal');
+            el.style.setProperty('--ha-reveal-delay', Math.min(i, MAX_STEPS) * group[1] + 'ms');
+            all.push(el);
+          });
+        });
+        return all;
+      };
+
+      // Once an element has arrived it goes back to being an ordinary element.
+      // .ha-reveal's 600ms transition covers transform as well as opacity, and
+      // leaving it on .product-card would stretch its 250ms hover lift to 600ms.
+      // The timer is the fallback for when transitionend never fires (the tab
+      // was backgrounded, the element was display:none for the duration).
+      var settle = function (el) {
+        var done = function () {
+          el.removeEventListener('transitionend', onEnd);
+          el.classList.remove('ha-reveal', 'is-in');
+          el.style.removeProperty('--ha-reveal-delay');
+        };
+        var onEnd = function (e) {
+          if (e.target === el && e.propertyName === 'opacity') done();
+        };
+        el.addEventListener('transitionend', onEnd);
+        setTimeout(done, 2000);
+      };
+
+      var reveal = function (el) {
+        el.classList.add('is-in');
+        settle(el);
+      };
+
+      document.documentElement.classList.add('ha-motion');
+
+      // Above the fold: no scroll happens before these should be visible, so
+      // they play on load instead of waiting for an intersection.
+      var hero = mark(onLoad);
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+          hero.forEach(reveal);
+        });
+      });
+
+      var observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return;
+          observer.unobserve(entry.target);
+          reveal(entry.target);
+        });
+      }, { threshold: 0.1, rootMargin: '0px 0px -10% 0px' });
+
+      mark(onScroll).forEach(function (el) { observer.observe(el); });
+    })();
 
     // FAQ accordion. Replaces the Webflow interaction that used to drive these
     // (its data-w-id bindings only existed for the original five questions), and
