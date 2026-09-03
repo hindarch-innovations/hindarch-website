@@ -312,13 +312,46 @@ video {
    overlay below 992px. */
 @media screen and (min-width: 992px) {
   .nav-menu {
-    gap: .5rem;
+    gap: 1rem;
   }
 
   .nav-menu-options {
     margin-left: 0;
     margin-right: 0;
     padding: 12px 16px;
+  }
+}
+
+/* Nav centring -------------------------------------------------------------
+   .nav-menu's flex-grow:1 (Webflow export) centres the links in whatever
+   space is left between the logo and Contact blocks, which keeps the gap on
+   each side equal -- but the logo block (~300px) is so much wider than the
+   Contact block (~110px) that "equal gap either side" still lands the link
+   cluster well right of the bar's true centre. Taking it out of flex flow
+   and centring it on the bar itself (via the sticky .navbar's positioning
+   context -- .header-container itself stays position:static) fixes that
+   directly, independent of the two side blocks' widths.
+
+   With the nav no longer eating the space between them, the logo and
+   Contact button land at the flex row's two edges (space-between with two
+   items = flex-start/flex-end), same as before. Contact's edge position is
+   pulled in to close the resulting gap to the now-centred nav -- centre
+   the nav on an unequal bar and one side has more room to give than the
+   other; without this the Contact side is left noticeably wider than the
+   logo side. Both rules are scoped to the same breakpoint as the block
+   above: below 992px the nav collapses into the dropdown overlay, where
+   neither applies. */
+@media screen and (min-width: 992px) {
+  .nav-menu {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin: 0;
+    transform: translate(-50%, -50%);
+  }
+
+  .div-block-12 {
+    margin-right: 190px;
   }
 }
 
@@ -767,6 +800,64 @@ video {
 
 @media (prefers-reduced-motion: reduce) {
   .navbar {
+    transition: none;
+  }
+}
+
+/* Back-to-top ----------------------------------------------------------------
+   Floating button that appears once the hero has scrolled out of view (JS in
+   index.html toggles .is-visible via the same IntersectionObserver pattern
+   used for reveal-on-scroll). Shown at every breakpoint -- mobile has the
+   collapsed burger nav and the smallest logo, so it needs this most.
+   --------------------------------------------------------------------------- */
+.ha-back-to-top {
+  position: fixed;
+  right: 16px;
+  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #ffffff1f;
+  border-radius: 50%;
+  background-color: #081326cc;
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  color: #f0eee8;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+  transition: opacity .25s ease, transform .25s ease, border-color .2s ease, background-color .2s ease;
+  z-index: 998; /* below the navbar's 1000, above page content */
+}
+
+.ha-back-to-top.is-visible {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+
+.ha-back-to-top:hover {
+  border-color: #ffc10740;
+  background-color: #0f1c33cc;
+}
+
+.ha-back-to-top:focus-visible {
+  outline: 2px solid #ffc107;
+  outline-offset: 2px;
+}
+
+@media screen and (min-width: 992px) {
+  .ha-back-to-top {
+    right: 24px;
+    bottom: 24px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ha-back-to-top {
     transition: none;
   }
 }

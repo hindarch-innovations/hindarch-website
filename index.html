@@ -112,7 +112,7 @@
           </div>
         </a></div>
       <nav role="navigation" id="w-node-_45881f04-c4d6-b257-168f-66370cac8236-71312fed" class="nav-menu w-nav-menu"><a
-          href="#Hero-Section" class="nav-menu-options w-nav-link">Home</a><a href="#About-Section"
+          href="#About-Section"
           class="nav-menu-options w-nav-link">About</a><a href="#Products-Section"
           class="nav-menu-options w-nav-link">Products</a><a href="#FAQs-Section"
           class="nav-menu-options w-nav-link">FAQs</a></nav>
@@ -587,7 +587,7 @@
                 <div class="rl_footer1_link-list">
                   <div class="rl_footer_column-text">Navigate</div>
                   <div class="rl_footer1_spacing-block-4">
-                  </div><a href="#Hero-Section" class="rl_footer1_link">Home</a><a href="#About-Section"
+                  </div><a href="#About-Section"
                     class="rl_footer1_link">About</a><a href="#Products-Section" class="rl_footer1_link">Products</a><a
                     href="#FAQs-Section" class="rl_footer1_link">FAQs</a><a href="#Contact-Section"
                     class="rl_footer1_link">Contact</a>
@@ -629,6 +629,12 @@
       </div>
     </div>
   </section>
+  <button type="button" id="ha-back-to-top" class="ha-back-to-top" aria-label="Back to top">
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"
+      stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M6 15l6-6 6 6" />
+    </svg>
+  </button>
   <script src="js/jquery.js?site=6a907040c273936b71312ff0" type="text/javascript"></script>
   <script src="js/webflow.schunk.a3140c51201be139.js" type="text/javascript"></script>
   <script src="js/webflow.schunk.f5b27520d999655b.js" type="text/javascript"></script>
@@ -646,6 +652,59 @@
       };
       window.addEventListener('scroll', sync, { passive: true });
       sync();
+    })();
+
+    // Shared by the back-to-top button and the header/footer logos: a real
+    // window.scrollTo(0) rather than following #Hero-Section as an anchor.
+    // The navbar is sticky and Hero-Section sits right after it in the flow, so
+    // an anchor jump lands scrollY at the navbar's height -- visually that tucks
+    // the top of the hero under the pinned navbar instead of reaching the true
+    // top of the page. Scrolling the window directly avoids that offset.
+    var haScrollToTop = function () {
+      var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      window.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' });
+    };
+
+    // Logo click = same "true top" scroll as the back-to-top button, not just
+    // an anchor jump to the hero section. Registered on the capture phase with
+    // stopImmediatePropagation: Webflow's own bundle also binds a (delayed,
+    // pushState-based) handler to nav-brand links that re-lands on the hero's
+    // offset instead of the page top, and since it never fires a native
+    // hashchange there is no later event to correct -- capturing first and
+    // killing propagation is what stops it from running at all.
+    (function () {
+      var logos = document.querySelectorAll('.brand, .brand-2');
+      Array.prototype.forEach.call(logos, function (logo) {
+        logo.addEventListener('click', function (e) {
+          e.preventDefault();
+          e.stopImmediatePropagation();
+          haScrollToTop();
+        }, true);
+      });
+    })();
+
+    // Back-to-top button: visible once the hero has scrolled out of view. Reuses
+    // an IntersectionObserver rather than a scroll-position threshold so it tracks
+    // the hero's real height at every breakpoint instead of a magic pixel value.
+    (function () {
+      var btn = document.getElementById('ha-back-to-top');
+      var hero = document.getElementById('Hero-Section');
+      if (!btn || !hero) return;
+
+      btn.addEventListener('click', haScrollToTop);
+
+      if (!('IntersectionObserver' in window)) {
+        // No observer support: fall back to always showing the button once JS
+        // confirms the hero exists, rather than leaving it permanently hidden.
+        btn.classList.add('is-visible');
+        return;
+      }
+
+      var observer = new IntersectionObserver(function (entries) {
+        // Hero intersecting (any part on screen) => hide; fully scrolled past => show.
+        btn.classList.toggle('is-visible', !entries[0].isIntersecting);
+      }, { threshold: 0 });
+      observer.observe(hero);
     })();
 
     // Reveal on scroll. Groups are revealed one element at a time via a CSS
