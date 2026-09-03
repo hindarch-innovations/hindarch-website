@@ -455,6 +455,13 @@ video {
     margin-right: auto;
   }
 
+  /* .content-wrapper packs its children to flex-start, which left the mark
+     hanging off the left edge while the name, description and features under it
+     are centred. Only the logo needs overriding -- the rest already agree. */
+  .product-logo {
+    align-self: center;
+  }
+
   #w-node-_160d8ce7-1637-832c-0c5f-21793dc322c8-71312fed {
     grid-area: 1 / 1 / 2 / 2;
   }
