@@ -669,11 +669,13 @@ video {
     }
 
     /* The description row is as tall as the longest of the three, so the two
-       shorter ones have slack. Stretching left all of it below the text, which
-       gave HindPred a 13px gap to "Key Features" and the others 41px. Centring
-       splits the slack above and below, so every card reads the same. */
+       shorter ones have slack somewhere. It goes below the text, never above:
+       every description starts on the same line as its neighbours, directly
+       under the product name. (Centring the block split the slack evenly, which
+       balanced each card in isolation but dropped the two shorter descriptions
+       a line lower than HindPred's.) */
     .product-info {
-      align-self: center;
+      align-self: start;
     }
 
     /* align-self centred the name on the flex cross axis; in a grid that axis
@@ -735,4 +737,13 @@ video {
    empty band under the copyright line with nothing after it. */
 .rl-padding-section-medium-2 {
   padding-bottom: 2.5rem;
+}
+
+/* Breathing room before "Key Features" specifically -- the row gap above sets
+   the space under the product name, and the description wants a little more
+   separation from the section label than the name does. Applied to the label
+   rather than the gap so it lands identically in all three cards, which keeps
+   the labels on one line whatever the description length. */
+.key-features {
+  margin-top: .625rem;
 }
