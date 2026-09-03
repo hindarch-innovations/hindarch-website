@@ -809,7 +809,13 @@ video {
    index.html toggles .is-visible via the same IntersectionObserver pattern
    used for reveal-on-scroll). Shown at every breakpoint -- mobile has the
    collapsed burger nav and the smallest logo, so it needs this most.
-   --------------------------------------------------------------------------- */
+
+   Solid amber, same as .button-primary (the "Book a Demo" CTA), rather than
+   the translucent dark-navy panel this started as: that panel's #081326 base
+   is the exact background-color .rl_footer1_component paints the footer with,
+   so over the footer the button all but disappeared. Amber against the page's
+   uniformly dark backgrounds guarantees contrast in every section without
+   having to detect which one the button happens to be floating over. */
 .ha-back-to-top {
   position: fixed;
   right: 16px;
@@ -819,17 +825,16 @@ video {
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid #ffffff1f;
+  border: 2px solid #0000;
   border-radius: 50%;
-  background-color: #081326cc;
-  -webkit-backdrop-filter: blur(16px);
-  backdrop-filter: blur(16px);
-  color: #f0eee8;
+  background-color: #ffc107;
+  color: #333;
   cursor: pointer;
   opacity: 0;
   transform: translateY(8px);
   pointer-events: none;
-  transition: opacity .25s ease, transform .25s ease, border-color .2s ease, background-color .2s ease;
+  box-shadow: 0 4px 16px #00000059;
+  transition: opacity .25s ease, transform .25s ease, background-color .2s ease, box-shadow .2s ease;
   z-index: 998; /* below the navbar's 1000, above page content */
 }
 
@@ -840,12 +845,17 @@ video {
 }
 
 .ha-back-to-top:hover {
-  border-color: #ffc10740;
-  background-color: #0f1c33cc;
+  background-color: #ffcd38;
+  box-shadow: 0 6px 20px #ffc10740;
+}
+
+.ha-back-to-top:active {
+  background-color: #f0b400;
+  box-shadow: none;
 }
 
 .ha-back-to-top:focus-visible {
-  outline: 2px solid #ffc107;
+  outline: 2px solid #f0eee8;
   outline-offset: 2px;
 }
 
