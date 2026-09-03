@@ -414,7 +414,7 @@ video {
   .header-container {
     gap: 12px;
     max-width: none;
-    padding: .75rem 20px;
+    padding: .5rem 20px;
   }
 
   .brand,
@@ -432,12 +432,14 @@ video {
     flex: 0 1 auto;
   }
 
-  /* The mark is roughly square, so the 100-119px width made a 130px-tall bar --
-     about a quarter of a phone screen before any content. */
+  /* Below 992px the Webflow design ran a tall bar with the full-size mark: 119px
+     on tablet, stepping to 100px on phones. The image is square (1024x1024) with
+     transparent margins, so it reads a little smaller than its box. min-width:0
+     lets it give up pixels below 360px rather than pushing the burger off-screen. */
   .image-3 {
-    width: auto;
+    width: 119px;
     height: auto;
-    max-height: 44px;
+    min-width: 0;
   }
 
   /* 768-991px still ran three product columns, squeezing each card to ~163px
@@ -482,6 +484,15 @@ video {
 }
 
 @media screen and (max-width: 767px) {
+  .header-container {
+    padding-left: 5%;
+    padding-right: 5%;
+  }
+
+  .image-3 {
+    width: 110px;
+  }
+
   .section-5 {
     padding-bottom: 3rem;
   }
@@ -553,8 +564,11 @@ video {
 
   .header-container {
     gap: 8px;
-    padding-left: 16px;
-    padding-right: 16px;
+    padding: .625rem 16px;
+  }
+
+  .image-3 {
+    width: 100px;
   }
 
   .brand {
@@ -568,11 +582,11 @@ video {
   }
 
   .text-block.grid1 {
-    font-size: 1rem;
+    font-size: 1.1rem;
   }
 
   .text-block.grid2 {
-    font-size: .78rem;
+    font-size: .85rem;
   }
 
   .menu-button {
@@ -591,6 +605,41 @@ video {
 
   .ha-map {
     max-width: none;
+  }
+}
+
+/* Very narrow phones ---------------------------------------------------------
+   Under ~360px the tall brand block, the Contact button and the burger no
+   longer all fit on one row at their 480px sizes, so the mark and wordmark step
+   down once more and the gutters tighten. Everything stays on one line instead
+   of the button riding over the wordmark.
+   --------------------------------------------------------------------------- */
+
+@media screen and (max-width: 359px) {
+  .header-container {
+    gap: 6px;
+    padding: .5rem 12px;
+  }
+
+  .image-3 {
+    width: 64px;
+  }
+
+  .text-block.grid1 {
+    font-size: .95rem;
+  }
+
+  .text-block.grid2 {
+    font-size: .72rem;
+  }
+
+  .button-2 {
+    padding: 9px 10px;
+    font-size: 11px;
+  }
+
+  .menu-button {
+    padding: 10px;
   }
 }
 
