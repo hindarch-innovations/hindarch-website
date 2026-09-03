@@ -712,33 +712,38 @@ video {
 }
 
 /* Sticky bar ------------------------------------------------------------------
-   The scrolled state used to be written as inline styles on every scroll event,
-   flipping backdrop-filter between none and blur(16px) and border-bottom between
-   none and 1px. Both flips were visible:
+   "HindArch Innovations" appeared to nudge left the moment the page scrolled.
+   Nothing was moving: every box in the bar measures identically at rest and
+   scrolled. What changed was how the brand text was rasterised, and the old
+   scroll handler -- which rewrote inline styles on every scroll event -- flipped
+   three things that each force a re-raster:
 
-   - Turning backdrop-filter on promoted the bar to its own compositing layer
-     mid-scroll. The brand sits at a fractional offset (the 5% gutter is 24.44px
-     at a 490px bar), and promotion re-rasterises that against the new layer
-     origin, so "HindArch Innovations" appeared to nudge left.
-   - Adding a 1px border grew the bar from 126px to 127px, nudging the whole
-     page down a pixel.
+   - backdrop-filter none -> blur(16px), which promotes the bar to its own
+     compositing layer mid-scroll. The brand sits at a fractional offset (the 5%
+     gutter is 24.44px on a 490px bar), so promotion re-snaps it.
+   - border-bottom none -> 1px, growing the bar 126px -> 127px and nudging the
+     page below it down a pixel.
+   - background-color opaque -> 80% alpha. This was the one that actually moved
+     the glyphs: text on a non-opaque background loses subpixel (LCD)
+     antialiasing and is redrawn with grayscale AA, which shifts glyph edges by
+     a fraction of a pixel. A pixel diff of the bar at rest against the bar
+     scrolled put 754 changed pixels directly on the wordmark.
 
-   So the blur and the border box are now permanent -- the blur is invisible
-   while the background is opaque, and the border is transparent until it is
-   wanted -- and only colour and shadow change. The script toggles .is-scrolled
-   and nothing else.
+   All three are now constant. The blur, the border box and the background alpha
+   never change; only the border colour and the shadow do, and neither touches
+   how the text is drawn. The bar is translucent at the top of the page too,
+   which is invisible there because the hero behind it is already near-black.
    --------------------------------------------------------------------------- */
 
 .navbar {
-  background-color: #081326;
+  background-color: #081326cc;
   -webkit-backdrop-filter: blur(16px);
   backdrop-filter: blur(16px);
   border-bottom: 1px solid #0000;
-  transition: background-color .25s ease, border-color .25s ease, box-shadow .25s ease;
+  transition: border-color .25s ease, box-shadow .25s ease;
 }
 
 .navbar.is-scrolled {
-  background-color: #081326cc;
   border-bottom-color: #ffffff14;
   box-shadow: 0 4px 32px #00000059;
 }
