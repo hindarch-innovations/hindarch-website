@@ -128,3 +128,611 @@
   cursor: progress;
   opacity: .65;
 }
+
+/* Footer map ----------------------------------------------------------------
+   Keyless Google Maps embed (output=embed) framed to match .rl-form-input:
+   #0d1b2e ground, hairline white border, 8px radius, so it reads as part of
+   the dark footer rather than a pasted-in white rectangle.
+   --------------------------------------------------------------------------- */
+
+.ha-map {
+  aspect-ratio: 16 / 10;
+  width: 100%;
+  max-width: 420px;
+  margin-top: 1rem;
+  background-color: #0d1b2e;
+  border: 1px solid #ffffff1a;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.ha-map iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
+/* ---------------------------------------------------------------------------
+   RESPONSIVE
+
+   The Webflow export lays the hero out with position:absolute and hardcoded
+   pixel offsets (.hero-wrapper-two, and .youtube at top:279px/248px/311px, one
+   per breakpoint), and sizes the product-card internals with fixed pixel
+   heights. Both only hold at the three widths they were tuned at; everywhere
+   else the video lands on top of the copy and the feature lists get clipped.
+
+   These rules put the hero back into normal document flow and let the cards
+   size to their own content, so the layout is width-independent instead of
+   breakpoint-dependent. They are plain (unwrapped) selectors on purpose: they
+   share specificity with the export's rules and win on source order, which
+   neutralises the per-breakpoint values at every width at once.
+   --------------------------------------------------------------------------- */
+
+/* Safety net: nothing may force a horizontal scrollbar at any width.
+   `clip`, not `hidden` -- hidden turns html/body into a scroll container, and a
+   scroll container between the viewport and .navbar silently kills its
+   position:sticky. clip does the same visual job without that side effect. */
+html,
+body,
+.body {
+  overflow-x: clip;
+}
+
+img,
+iframe,
+video {
+  max-width: 100%;
+}
+
+/* Grid/flex children default to min-width:auto, so one long unbreakable string
+   can push a track wider than the viewport. */
+.header-container > *,
+.div-block-6 > *,
+.rl_contact7_component > *,
+.rl_footer1_top-wrapper > *,
+.rl_footer1_menu-wrapper > * {
+  min-width: 0;
+}
+
+/* Hero -----------------------------------------------------------------------
+   .hero-wrapper-two and .youtube both come out of absolute positioning, so the
+   headline, buttons and video simply stack. The section height then follows its
+   content instead of the 850-900px band it was pinned to. The video keeps its
+   ratio from the inline padding-top:56.17% hack the iframe already relies on,
+   so aspect-ratio is switched off to stop the two compounding.
+   --------------------------------------------------------------------------- */
+
+.hero-stack {
+  min-height: 0;
+  max-height: none;
+  justify-content: center;
+  border: none;
+  padding: 5rem 5% 4rem;
+  background-position: 50% 100%, 0 0;
+  background-size: cover, auto;
+}
+
+.container-2 {
+  width: 100%;
+  padding: 0;
+}
+
+.hero-wrapper-two {
+  position: static;
+  width: 100%;
+  max-width: 750px;
+  margin: 0 auto;
+}
+
+.youtube {
+  position: relative;
+  top: auto;
+  width: 100%;
+  max-width: 750px;
+  margin: 2rem auto 0;
+  aspect-ratio: auto;
+}
+
+.margin-bottom-24px {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* Hero CTA row wraps instead of overflowing once the two buttons no longer fit
+   side by side. The gap replaces .btn-contact-us's own left margin. */
+.div-block {
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px 16px;
+  padding-bottom: 1.5rem;
+}
+
+.btn-contact-us {
+  margin-left: 0;
+}
+
+/* Navbar ---------------------------------------------------------------------
+   The export nudges the logo, wordmark and Contact button into place with
+   margins that only line up at one width (.image-3 margin-top:32px,
+   .div-block-3 margin-top:21px, .button-2 margin-left:-43px,
+   .menu-button margin-left:-16px). Flex centring does that job on its own.
+   --------------------------------------------------------------------------- */
+
+/* The top bar was a four-track grid inside a .w-container capped at 940px, so
+   on a 1440px screen the links had a 252px track to fit 369px of menu into and
+   spilled over the Contact button. Flex, at the page's own width, gives each
+   part the room it actually needs. */
+.header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  width: 100%;
+  max-width: 1280px;
+  padding: 1rem 40px;
+}
+
+/* .w-container's clearfix pseudo-elements would otherwise sit in the flex row. */
+.header-container:before,
+.header-container:after {
+  display: none;
+}
+
+.div-block-2 {
+  flex: 0 1 auto;
+  min-width: 0;
+}
+
+.nav-menu {
+  flex: 1 1 auto;
+  justify-content: center;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+/* .w-nav-link ships margin-left/right:auto. On a flex row those auto margins
+   swallow every pixel of free space before justify-content gets a say, which
+   is why the links sat ~97px apart no matter how narrow the gap was set.
+   Zeroing them lets the gap actually control the spacing. Scoped to the
+   horizontal bar -- the auto margins still centre the links in the mobile
+   overlay below 992px. */
+@media screen and (min-width: 992px) {
+  .nav-menu {
+    gap: .5rem;
+  }
+
+  .nav-menu-options {
+    margin-left: 0;
+    margin-right: 0;
+    padding: 12px 16px;
+  }
+}
+
+.div-block-12 {
+  flex: 0 0 auto;
+}
+
+.image-3 {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.div-block-3 {
+  margin-top: 0;
+  line-height: 1.15;
+}
+
+/* grid2 inherited the 1px line-height off .div-block-3, which is what the
+   compensating top margin above was hiding. */
+.text-block.grid2 {
+  line-height: 1.1;
+}
+
+.button-2 {
+  margin-left: 0;
+  margin-right: 0;
+  line-height: 1.2;
+}
+
+.menu-button {
+  margin-left: 0;
+  padding: 14px;
+}
+
+/* Product cards --------------------------------------------------------------
+   Every fixed height here clipped its own content: .key-features-list is 90px
+   at max-width:767px, which already cut off HindGen's five bullets before
+   HindPred gained five of its own. Cards are equalised by the grid instead, and
+   the last child of .product-desc (the Book a Demo link, or HindVer's Coming
+   Soon chip) is pushed to the bottom so the three chips stay on one line.
+   --------------------------------------------------------------------------- */
+
+.div-block-6 {
+  place-items: stretch;
+}
+
+.product-card {
+  width: auto;
+  height: 100%;
+}
+
+.content-wrapper {
+  height: 100%;
+}
+
+.product-info {
+  height: auto;
+  text-align: center;
+}
+
+.key-features-list {
+  height: auto;
+}
+
+/* .content-wrapper aligns its children flex-start, so .product-desc shrink-wrapped
+   to its own longest bullet -- which made each card's CTA a different width
+   (184px / 234px / 139px at 375px). Stretching the block, and the CTA inside it,
+   gives every card the same full-width button the desktop layout already had. */
+.product-desc {
+  flex: 1 0 auto;
+  align-self: stretch;
+  min-height: 0;
+  max-height: none;
+}
+
+.product-desc > :last-child {
+  margin-top: auto;
+}
+
+.product-desc > .link-block-2,
+.product-desc > .coming-soon {
+  align-self: stretch;
+}
+
+.coming-soon {
+  line-height: 1.4;
+}
+
+/* Section rhythm -------------------------------------------------------------
+   .section-3 carries margin-bottom:-56px to tuck the FAQ up under Products.
+   That is absorbed by the FAQ's 80px top padding on desktop, but the padding
+   drops to 40px at max-width:767px and to 0 at max-width:479px, so on phones
+   the FAQ heading was pulled up over the product cards.
+   --------------------------------------------------------------------------- */
+
+@media screen and (max-width: 991px) {
+  .container-4,
+  .container-4.product-container {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
+  /* Below 992px the nav collapses to a hamburger; the brand block has to be
+     able to give up space or the burger ends up off-screen (entirely so by
+     480px, with the Contact button landing on the wordmark at 320px). */
+  .header-container {
+    gap: 12px;
+    max-width: none;
+    padding: .75rem 20px;
+  }
+
+  .brand,
+  .div-block-3 {
+    min-width: 0;
+  }
+
+  .div-block-2 {
+    height: auto;
+    min-height: 0;
+    max-width: none;
+  }
+
+  .div-block-3 {
+    flex: 0 1 auto;
+  }
+
+  /* The mark is roughly square, so the 100-119px width made a 130px-tall bar --
+     about a quarter of a phone screen before any content. */
+  .image-3 {
+    width: auto;
+    height: auto;
+    max-height: 44px;
+  }
+
+  /* 768-991px still ran three product columns, squeezing each card to ~163px
+     wide and 758px tall. Webflow only dropped to one column at 767px, and it
+     does that by re-placing the cards -- they are pinned to columns 1/2/3 by
+     per-node ID rules that outrank anything set on the grid itself, so the
+     placement has to be restated at the same specificity to move them. */
+  .div-block-6 {
+    grid-template-columns: 1fr;
+    width: 100%;
+    max-width: 560px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  #w-node-_160d8ce7-1637-832c-0c5f-21793dc322c8-71312fed {
+    grid-area: 1 / 1 / 2 / 2;
+  }
+
+  #w-node-_3ff5c38b-a8a9-6f2d-f9d3-c8aac5f41c95-71312fed {
+    grid-area: 2 / 1 / 3 / 2;
+  }
+
+  #w-node-_3ed8eafe-d3d4-f74c-5953-732003f70aee-71312fed {
+    grid-area: 3 / 1 / 4 / 2;
+  }
+
+  /* Same story in the footer: .rl_footer1_top-wrapper is set to a single
+     column here, but the menu block is pinned to column 2. */
+  #w-node-bac48109-d2cf-8768-a03d-a05968a5abe5-71312fed {
+    grid-area: 2 / 1 / 3 / 2;
+  }
+
+  .section-3 {
+    margin-bottom: 0;
+    padding-bottom: 3rem;
+  }
+
+  .section-5 {
+    padding-top: 3rem;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .section-5 {
+    padding-bottom: 3rem;
+  }
+
+  .section-6 {
+    padding-top: 3rem;
+  }
+}
+
+/* Footer ---------------------------------------------------------------------
+   The address and its heading sat 20px in from the logo on desktop
+   (margin-left) and 20px in again on mobile (padding-left). One gutter, from
+   the container, keeps the logo, address, map and link columns on one edge.
+   --------------------------------------------------------------------------- */
+
+.rl_footer3_text,
+.rl-text-style-small,
+.rl_footer1_menu-wrapper {
+  margin-left: 0;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* Phones ---------------------------------------------------------------------
+   Below 480px the export sets several controls to font-size:12px with
+   line-height:10px, leading tighter than the type itself, which squashes the
+   labels. Restored to normal leading, with padding that keeps every control at
+   roughly a 44px tap target.
+   --------------------------------------------------------------------------- */
+
+@media screen and (max-width: 479px) {
+  .heading-5 {
+    font-size: 1.75rem;
+    line-height: 1.25;
+  }
+
+  .margin-bottom-24px {
+    font-size: .95rem;
+    line-height: 1.7;
+  }
+
+  .rl-heading-style-h2,
+  .rl-heading-style-h2-2 {
+    line-height: 1.3;
+  }
+
+  .products-headline,
+  .about-subheading {
+    font-size: 1.15rem;
+  }
+
+  .paragraph,
+  .about-paragraph {
+    font-size: .95rem;
+  }
+
+  .button-primary,
+  .btn-contact-us {
+    padding: 12px 20px;
+    font-size: 14px;
+    line-height: 1.4;
+  }
+
+  .rl-button-2 {
+    padding: 13px 24px;
+    font-size: 14px;
+    line-height: 1.4;
+  }
+
+  .header-container {
+    gap: 8px;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .brand {
+    grid-column-gap: 8px;
+    gap: 8px;
+  }
+
+  .div-block-12 {
+    grid-column-gap: 8px;
+    gap: 8px;
+  }
+
+  .text-block.grid1 {
+    font-size: 1rem;
+  }
+
+  .text-block.grid2 {
+    font-size: .78rem;
+  }
+
+  .menu-button {
+    padding: 12px;
+  }
+
+  .button-2 {
+    padding: 10px 12px;
+    font-size: 12px;
+  }
+
+  .coming-soon {
+    padding: 11px 18px;
+    font-size: 12px;
+  }
+
+  .ha-map {
+    max-width: none;
+  }
+}
+
+/* FAQ accordion -------------------------------------------------------------
+   The panel open/close is driven by the inline script rather than Webflow's
+   interaction, so the animation lives here. Durations match what the preset
+   used: 400ms on the panel height, 200ms on the icon rotation (the "+" turns
+   into an "x" at 45 degrees).
+   --------------------------------------------------------------------------- */
+
+.rl_faq6_answer {
+  transition: height .4s ease;
+}
+
+.rl_faq6_icon-wrapper {
+  transition: transform .2s ease, border-color .25s, color .25s;
+}
+
+.rl_faq6_accordion.is-open .rl_faq6_icon-wrapper {
+  transform: rotate(45deg);
+}
+
+/* Only one panel is open at a time, so it is worth marking which one. */
+.rl_faq6_accordion.is-open {
+  border-color: #ffc10740;
+}
+
+.rl_faq6_question:focus-visible {
+  outline: 2px solid #ffc107;
+  outline-offset: -2px;
+  border-radius: 12px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rl_faq6_answer,
+  .rl_faq6_icon-wrapper {
+    transition: none;
+  }
+}
+
+/* Product cards: align the rows across cards -----------------------------------
+   The three descriptions are different lengths, so "Key Features" (and the
+   bullet list under it) started at a different height in each card. Subgrid
+   hands the card's rows back to the parent grid, so logo / name / description /
+   features become four shared rows sized by the tallest card -- alignment
+   without pinning anything to a magic pixel height.
+   Only needed where the cards sit side by side; stacked, there is nothing to
+   align against.
+   --------------------------------------------------------------------------- */
+
+@media screen and (min-width: 992px) {
+  @supports (grid-template-rows: subgrid) {
+    /* Set on all three levels: a subgrid uses its own gap rather than
+       inheriting the parent's, so they have to agree or the rows drift. */
+    .div-block-6,
+    .product-card,
+    .content-wrapper {
+      row-gap: 1.25rem;
+    }
+
+    .div-block-6 {
+      grid-template-rows: auto auto auto auto;
+    }
+
+    .product-card {
+      display: grid;
+      grid-template-rows: subgrid;
+    }
+
+    .content-wrapper {
+      display: grid;
+      grid-template-rows: subgrid;
+      grid-row: 1 / -1;
+      height: auto;
+      align-self: stretch;
+    }
+
+    /* The description row is as tall as the longest of the three, so the two
+       shorter ones have slack. Stretching left all of it below the text, which
+       gave HindPred a 13px gap to "Key Features" and the others 41px. Centring
+       splits the slack above and below, so every card reads the same. */
+    .product-info {
+      align-self: center;
+    }
+
+    /* align-self centred the name on the flex cross axis; in a grid that axis
+       is justify-self. Same for the logo, which must not stretch to the track. */
+    .product-name {
+      justify-self: center;
+    }
+
+    .product-logo {
+      justify-self: start;
+    }
+
+    /* Webflow pins each card to a single row by ID; they now span all four. */
+    #w-node-_160d8ce7-1637-832c-0c5f-21793dc322c8-71312fed {
+      grid-area: 1 / 1 / 5 / 2;
+    }
+
+    #w-node-_3ff5c38b-a8a9-6f2d-f9d3-c8aac5f41c95-71312fed {
+      grid-area: 1 / 2 / 5 / 3;
+    }
+
+    #w-node-_3ed8eafe-d3d4-f74c-5953-732003f70aee-71312fed {
+      grid-area: 1 / 3 / 5 / 4;
+    }
+  }
+}
+
+/* Footer ---------------------------------------------------------------------
+   With the map stacked under the address, the left column ran far taller than
+   the two link columns and left most of the right-hand side empty. The map now
+   takes a column of its own, so the row reads brand+address | links | map and
+   the three columns end at roughly the same depth.
+   --------------------------------------------------------------------------- */
+
+@media screen and (min-width: 992px) {
+  .rl_footer1_top-wrapper {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.2fr) minmax(0, 1fr);
+    grid-column-gap: 4rem;
+    align-items: start;
+  }
+
+  .ha-map {
+    grid-area: 1 / 3 / 2 / 4;
+    aspect-ratio: 4 / 3;
+    max-width: none;
+    margin-top: 0;
+  }
+}
+
+/* Stacked, the map reads best last -- below 480px the wrapper is a flex column
+   that ignores grid placement, so this keeps 480-991px in the same order. */
+@media screen and (max-width: 991px) {
+  .ha-map {
+    grid-area: 3 / 1 / 4 / 2;
+  }
+}
+
+/* The footer's section padding is symmetrical at 5rem, which leaves a large
+   empty band under the copyright line with nothing after it. */
+.rl-padding-section-medium-2 {
+  padding-bottom: 2.5rem;
+}
