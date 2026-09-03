@@ -612,9 +612,12 @@
       var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       if (reduced || !('IntersectionObserver' in window)) return;
 
-      // [selector, stagger in ms]. Order within a group follows document order.
+      // [selector, stagger in ms]. Order within a group follows document order,
+      // so the hero lands in reading order: headline, copy, buttons, video.
+      // It plays on open rather than on an intersection -- it is already on
+      // screen, so there is no scroll to wait for.
       var onLoad = [
-        ['.heading-5, .margin-bottom-24px, .div-block, .youtube', 80]
+        ['.heading-5, .margin-bottom-24px, .div-block, .youtube', 120]
       ];
       var onScroll = [
         ['.about-section .rl-heading-style-h2, .about-subheading, .about-vision-card', 80],
@@ -630,12 +633,13 @@
       // a stall rather than a stagger, so the delay stops growing there.
       var MAX_STEPS = 6;
 
-      var mark = function (groups) {
+      var mark = function (groups, variant) {
         var all = [];
         groups.forEach(function (group) {
           var els = document.querySelectorAll(group[0]);
           Array.prototype.forEach.call(els, function (el, i) {
             el.classList.add('ha-reveal');
+            if (variant) el.classList.add(variant);
             el.style.setProperty('--ha-reveal-delay', Math.min(i, MAX_STEPS) * group[1] + 'ms');
             all.push(el);
           });
@@ -651,14 +655,14 @@
       var settle = function (el) {
         var done = function () {
           el.removeEventListener('transitionend', onEnd);
-          el.classList.remove('ha-reveal', 'is-in');
+          el.classList.remove('ha-reveal', 'ha-reveal--hero', 'is-in');
           el.style.removeProperty('--ha-reveal-delay');
         };
         var onEnd = function (e) {
           if (e.target === el && e.propertyName === 'opacity') done();
         };
         el.addEventListener('transitionend', onEnd);
-        setTimeout(done, 2000);
+        setTimeout(done, 2500);
       };
 
       var reveal = function (el) {
@@ -668,14 +672,33 @@
 
       document.documentElement.classList.add('ha-motion');
 
-      // Above the fold: no scroll happens before these should be visible, so
-      // they play on load instead of waiting for an intersection.
-      var hero = mark(onLoad);
-      requestAnimationFrame(function () {
+      // The hero is on screen from the first frame, so it plays on open rather
+      // than on an intersection. It waits for the webfonts first: the headline
+      // is DM Sans loaded by WebFont.load, and starting before the swap meant
+      // the entrance ran against fallback type and was mostly over by the time
+      // the real face landed -- which is why it read as no animation at all.
+      // The race caps the wait, so a slow or failed font load delays the hero
+      // by at most 900ms instead of leaving it stuck at opacity 0.
+      var hero = mark(onLoad, 'ha-reveal--hero');
+      var playHero = function () {
         requestAnimationFrame(function () {
-          hero.forEach(reveal);
+          requestAnimationFrame(function () {
+            hero.forEach(reveal);
+          });
         });
-      });
+      };
+
+      var heroStarted = false;
+      var startHero = function () {
+        if (heroStarted) return;
+        heroStarted = true;
+        playHero();
+      };
+
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(startHero);
+      }
+      setTimeout(startHero, 900);
 
       var observer = new IntersectionObserver(function (entries) {
         entries.forEach(function (entry) {

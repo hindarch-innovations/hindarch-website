@@ -722,6 +722,18 @@ html.ha-motion .ha-reveal.is-in {
   transform: none;
 }
 
+/* The hero is the one group nobody scrolls to -- it is already on screen when
+   the page opens, so it gets a longer, further entrance that reads as an
+   entrance rather than the brief lift the scrolled-to sections use. */
+html.ha-motion .ha-reveal.ha-reveal--hero {
+  transform: translateY(28px);
+  transition-duration: .85s, .85s;
+}
+
+html.ha-motion .ha-reveal--hero.is-in {
+  transform: none;
+}
+
 /* The export hovers the yellow "Book a Demo" CTA to grey #32343a with white
    text -- a Webflow default that reads as a broken state next to the amber
    palette. Brightened instead, with the same lift the product cards use. */
