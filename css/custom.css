@@ -1149,3 +1149,512 @@ html.ha-motion .ha-reveal--hero.is-in {
 .key-features {
   margin-top: .625rem;
 }
+
+/* Applications & Industries ---------------------------------------------------
+   The first section after the hero. A radial diagram -- HindArch at the core,
+   the three products on the ring around it, six industries on the outside --
+   next to a details panel. It opens on Silicon and steps clockwise to the
+   next industry every 5 seconds while on screen. Choosing an industry (click,
+   tap, Enter/Space, or the arrow keys) shows that one and stops the rotation;
+   choosing it again, the core, or "Overview" brings the overview back. The
+   script that drives it is the "Applications diagram" block in index.html.
+
+   Every panel is in the markup, so with JS off the overview shows and the
+   industry copy is still in the page source; only the switching is lost.
+   --------------------------------------------------------------------------- */
+
+.ha-apps {
+  position: relative;
+  padding: 100px 5% 110px;
+  background-color: #00020a;
+  background-image:
+    radial-gradient(ellipse 60% 55% at 30% 58%, #0a1830 0%, #00020a00 70%),
+    radial-gradient(circle at 30% 58%, #ffc1070d 0%, #ffc10700 38%);
+  color: #f0eee8;
+  overflow: clip;
+}
+
+.ha-apps__container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ha-apps__label {
+  margin-top: 0;
+}
+
+/* Mirrors .products-headline / .about-subheading, which the reveal script
+   already targets by bare class name -- reusing them would pull this heading
+   into the Products stagger. */
+.ha-apps__headline {
+  max-width: 820px;
+  margin: 0;
+  color: #ffc107;
+  text-align: center;
+  letter-spacing: -.03em;
+  font-size: 40px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.ha-apps__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr);
+  align-items: center;
+  gap: 4rem;
+  width: 100%;
+  margin-top: 3.5rem;
+}
+
+.ha-apps__visual {
+  width: 100%;
+  max-width: 600px;
+  justify-self: center;
+}
+
+/* Diagram ------------------------------------------------------------------ */
+
+.ha-apps-diagram {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  font-family: var(--ha-ui-font);
+}
+
+.ha-apps-ticks {
+  fill: none;
+  stroke: #ffffff1f;
+  stroke-width: 1.5;
+}
+
+.ha-apps-sector {
+  cursor: pointer;
+  outline: none;
+}
+
+.ha-apps-sector__shape {
+  fill: #0d1b2e;
+  fill-opacity: .82;
+  stroke: #ffffff1a;
+  stroke-width: 1.5;
+  transition: fill .25s ease, fill-opacity .25s ease, stroke .25s ease, filter .25s ease;
+}
+
+.ha-apps-sector__icon {
+  fill: none;
+  stroke: #ffc107;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: .85;
+  transition: opacity .25s ease;
+}
+
+.ha-apps-sector__label {
+  fill: #f0eee8;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: .02em;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  transition: fill .25s ease;
+  pointer-events: none;
+}
+
+.ha-apps-sector:hover .ha-apps-sector__shape {
+  fill: #12253f;
+  stroke: #ffc10759;
+}
+
+.ha-apps-sector:hover .ha-apps-sector__icon {
+  opacity: 1;
+}
+
+.ha-apps-sector:focus-visible .ha-apps-sector__shape {
+  stroke: #f0eee8;
+  stroke-width: 2.5;
+}
+
+.ha-apps-sector.is-active .ha-apps-sector__shape {
+  fill: #ffc107;
+  fill-opacity: .16;
+  stroke: #ffc107;
+  filter: drop-shadow(0 0 14px #ffc10766);
+}
+
+.ha-apps-sector.is-active .ha-apps-sector__icon {
+  opacity: 1;
+}
+
+.ha-apps-sector.is-active .ha-apps-sector__label {
+  fill: #ffcd38;
+}
+
+/* The other five step back while one is chosen. */
+.ha-apps-diagram.has-industry .ha-apps-sector:not(.is-active) .ha-apps-sector__shape {
+  fill-opacity: .55;
+}
+
+.ha-apps-diagram.has-industry .ha-apps-sector:not(.is-active):not(:hover) .ha-apps-sector__label {
+  fill: #f0eee8a6;
+}
+
+/* Product ring */
+.ha-apps-product__shape {
+  fill: #081326;
+  stroke: #ffc10740;
+  stroke-width: 1.2;
+  transition: fill .3s ease, stroke .3s ease;
+}
+
+.ha-apps-product__label {
+  fill: #ffc107;
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: .2em;
+  text-anchor: middle;
+}
+
+/* With an industry chosen, all three products light up: every industry is
+   served by the whole Predict -> Design -> Verify flow. */
+.ha-apps-diagram.has-industry .ha-apps-product__shape {
+  fill: #ffc1071f;
+  stroke: #ffc107a6;
+}
+
+/* Core */
+.ha-apps-core {
+  cursor: pointer;
+  outline: none;
+}
+
+.ha-apps-core__glow {
+  fill: url(#ha-apps-core-glow);
+  pointer-events: none;
+  animation: ha-apps-breathe 4.5s ease-in-out infinite;
+}
+
+@keyframes ha-apps-breathe {
+  0%, 100% { opacity: .65; }
+  50% { opacity: 1; }
+}
+
+.ha-apps-core__disc {
+  fill: url(#ha-apps-core-fill);
+  stroke: #ffc107;
+  stroke-width: 2.5;
+  filter: drop-shadow(0 0 18px #ffc10759);
+  transition: stroke-width .25s ease;
+}
+
+.ha-apps-core:hover .ha-apps-core__disc {
+  stroke-width: 3.5;
+}
+
+.ha-apps-core:focus-visible .ha-apps-core__disc {
+  stroke: #f0eee8;
+}
+
+.ha-apps-core__name {
+  fill: #ffc107;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -.01em;
+  text-anchor: middle;
+  pointer-events: none;
+}
+
+/* Details panel ------------------------------------------------------------- */
+
+.ha-apps__details {
+  width: 100%;
+  min-width: 0;
+}
+
+.ha-apps-panel {
+  background-color: #ffffff08;
+  border: 1px solid #ffc1072e;
+  border-radius: 16px;
+  padding: 36px 36px 32px;
+  box-shadow: 0 0 48px #ffc10712, inset 0 1px #ffffff0d;
+  outline: none;
+}
+
+.ha-apps-panel[hidden] {
+  display: none;
+}
+
+.ha-apps-panel.is-entering {
+  animation: ha-apps-panel-in .35s ease-out both;
+}
+
+@keyframes ha-apps-panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.ha-apps-panel__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin: -6px 0 14px -8px;
+  padding: 6px 10px 6px 6px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: #f0eee8a6;
+  font-family: var(--ha-ui-font);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color .2s ease, background-color .2s ease;
+}
+
+.ha-apps-panel__back:hover {
+  color: #ffcd38;
+  background-color: #ffc10714;
+}
+
+.ha-apps-panel__back:focus-visible {
+  outline: 2px solid #ffc107;
+  outline-offset: 1px;
+}
+
+.ha-apps-panel__eyebrow {
+  color: #ffc107;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  font-size: 13px;
+  font-weight: 800;
+  margin-bottom: 10px;
+}
+
+.ha-apps-panel__title {
+  margin: 0 0 14px;
+  color: #f0eee8;
+  font-family: var(--ha-ui-font);
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -.02em;
+  line-height: 1.25;
+}
+
+.ha-apps-panel__text {
+  margin: 0;
+  color: #f0eee8bf;
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 1.75;
+}
+
+.ha-apps-products {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 24px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ha-apps-product-row {
+  padding: 14px 16px;
+  background-color: #0d1b2e;
+  border: 1px solid #ffffff14;
+  border-left: 3px solid #ffc107;
+  border-radius: 10px;
+}
+
+.ha-apps-product-row__name {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  color: #ffc107;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.ha-apps-product-row__role {
+  color: #f0eee88c;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.ha-apps-product-row__text {
+  margin: 4px 0 0;
+  color: #f0eee8d9;
+  font-size: 14.5px;
+  line-height: 1.6;
+}
+
+.ha-apps-products--compact .ha-apps-product-row {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  column-gap: 14px;
+  padding: 11px 16px;
+}
+
+.ha-apps-products--compact .ha-apps-product-row__name {
+  flex: 0 0 auto;
+  min-width: 92px;
+}
+
+.ha-apps-products--compact .ha-apps-product-row__text {
+  margin: 0;
+  flex: 1 1 200px;
+}
+
+.ha-apps-panel__hint {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 22px 0 0;
+  color: #f0eee88c;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.ha-apps-panel__hint-dot {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #ffc107;
+  box-shadow: 0 0 0 0 #ffc10780;
+  animation: ha-apps-ping 2s ease-out infinite;
+}
+
+@keyframes ha-apps-ping {
+  0% { box-shadow: 0 0 0 0 #ffc10780; }
+  80%, 100% { box-shadow: 0 0 0 8px #ffc10700; }
+}
+
+/* Entrance: the core lands first, then the product ring, then the six sectors
+   one after another clockwise from the top. Scoped to html.ha-motion like the
+   rest of the reveal system, so nothing is hidden if the script never runs;
+   .is-in is added by the same IntersectionObserver. In SVG the default
+   transform origin is the viewBox origin, which is the diagram's centre, so
+   each scale() grows out of the core. */
+html.ha-motion .ha-apps-diagram .ha-apps-core,
+html.ha-motion .ha-apps-diagram .ha-apps-products-ring,
+html.ha-motion .ha-apps-diagram .ha-apps-ticks,
+html.ha-motion .ha-apps-diagram .ha-apps-sector {
+  opacity: 0;
+  transform: scale(.82);
+  transition: opacity .7s cubic-bezier(.22, .61, .36, 1),
+              transform .7s cubic-bezier(.22, .61, .36, 1);
+}
+
+html.ha-motion .ha-apps-diagram .ha-apps-core {
+  transform: scale(.5);
+}
+
+html.ha-motion .ha-apps-diagram .ha-apps-products-ring {
+  transition-delay: .2s;
+}
+
+html.ha-motion .ha-apps-diagram .ha-apps-sector {
+  transition-delay: calc(.4s + var(--i) * 90ms);
+}
+
+html.ha-motion .ha-apps-diagram .ha-apps-ticks {
+  transition-delay: .9s;
+}
+
+html.ha-motion .ha-apps-diagram.is-in .ha-apps-core,
+html.ha-motion .ha-apps-diagram.is-in .ha-apps-products-ring,
+html.ha-motion .ha-apps-diagram.is-in .ha-apps-ticks,
+html.ha-motion .ha-apps-diagram.is-in .ha-apps-sector {
+  opacity: 1;
+  transform: none;
+}
+
+@media screen and (max-width: 991px) {
+  .ha-apps {
+    padding: 72px 24px 80px;
+    background-image:
+      radial-gradient(ellipse 80% 40% at 50% 38%, #0a1830 0%, #00020a00 70%),
+      radial-gradient(circle at 50% 38%, #ffc1070d 0%, #ffc10700 35%);
+  }
+
+  .ha-apps__headline {
+    font-size: 1.5rem;
+    line-height: 1.4;
+  }
+
+  .ha-apps__layout {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+    max-width: 640px;
+    margin-top: 2.5rem;
+  }
+
+  .ha-apps__visual {
+    max-width: 520px;
+  }
+}
+
+/* On a phone the diagram is ~340px wide, so 17 viewBox units of label would
+   render at about 9px. Larger units keep the labels near 13px. */
+@media screen and (max-width: 600px) {
+  .ha-apps-sector__label {
+    font-size: 23px;
+  }
+
+  .ha-apps-product__label {
+    font-size: 15px;
+    letter-spacing: .12em;
+  }
+
+  .ha-apps-core__name {
+    font-size: 25px;
+  }
+}
+
+@media screen and (max-width: 479px) {
+  .ha-apps {
+    padding: 56px 16px 64px;
+  }
+
+  .ha-apps__headline {
+    font-size: 1.15rem;
+  }
+
+  .ha-apps-panel {
+    padding: 26px 20px 22px;
+  }
+
+  .ha-apps-panel__title {
+    font-size: 23px;
+  }
+
+  .ha-apps-panel__text {
+    font-size: 15px;
+    line-height: 1.7;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ha-apps-core__glow,
+  .ha-apps-panel__hint-dot,
+  .ha-apps-panel.is-entering {
+    animation: none;
+  }
+
+  .ha-apps-sector__shape,
+  .ha-apps-core__disc {
+    transition: none;
+  }
+}
